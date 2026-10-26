@@ -1,0 +1,68 @@
+name: datlichkham
+description: "A new Flutter project."
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.7
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+  http: ^1.2.1
+  dio: ^5.4.0
+  flutter_secure_storage: ^9.2.2
+  shimmer: ^3.0.0
+  jwt_decoder: ^2.0.1
+  shared_preferences: ^2.5.5
+  toastification: ^3.2.0
+  firebase_core: ^3.13.0
+  firebase_messaging: ^15.2.0
+  flutter_local_notifications: ^19.0.0
+  intl: ^0.20.2
+  stomp_dart_client: ^3.0.1
+  web_socket_channel: ^3.0.3
+  uuid: ^4.5.1
+  package_info_plus: ^8.1.0
+  device_info_plus: ^12.4.0
+  connectivity_plus: ^6.0.5
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  flutter_launcher_icons: ^0.14.3
+
+flutter_launcher_icons:
+  android: true
+  ios: false
+  image_path: "assets/images/logo.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: "assets/images/logo.png"
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/user.png
+    - assets/images/error-404.png
+    - assets/images/specialty/chan-doan-hinh-anh.png
+    - assets/images/specialty/nhi-khoa.png
+    - assets/images/specialty/noi-tong-quat.png
+    - assets/images/specialty/rang-ham-mat.png
+    - assets/images/specialty/tai-mui-hong.png
+    - assets/images/specialty/tim-mach.png
+    - assets/images/specialty/xet-nghiem.png
+    - assets/images/employee/doctor female.png
+    - assets/images/employee/doctor male.png
+    - assets/images/employee/tro ly nam.png
+    - assets/images/employee/tro ly nu.png
+    - assets/images/calendar.png
+    - assets/images/clock.png
+    - assets/images/first-aid-kit.png
+    - assets/images/money.png
+    - assets/images/stethoscope.png
