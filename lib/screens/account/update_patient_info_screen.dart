@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+
 import '../../data/entities/benh_nhan_entity.dart';
 import '../../repositories/benh_nhan_repository.dart';
 import '../../services/patient_service.dart';
@@ -9,7 +10,8 @@ class UpdatePatientInfoScreen extends StatefulWidget {
   const UpdatePatientInfoScreen({super.key});
 
   @override
-  State<UpdatePatientInfoScreen> createState() => _UpdatePatientInfoScreenState();
+  State<UpdatePatientInfoScreen> createState() =>
+      _UpdatePatientInfoScreenState();
 }
 
 class _UpdatePatientInfoScreenState extends State<UpdatePatientInfoScreen> {
@@ -19,6 +21,7 @@ class _UpdatePatientInfoScreenState extends State<UpdatePatientInfoScreen> {
 
   bool _isLoading = true;
   bool _isSaving = false;
+  bool _isIdentityVerified = false;
   int? _maBenhNhan;
 
   // Controllers
@@ -56,6 +59,7 @@ class _UpdatePatientInfoScreenState extends State<UpdatePatientInfoScreen> {
       final patient = await _patientService.getMyProfile();
       if (patient != null && mounted) {
         _maBenhNhan = patient.maBenhNhan;
+        _isIdentityVerified = patient.daXacMinhDanhTinh == true;
         _hoTenController.text = patient.hoTen;
         _ngaySinhController.text = patient.ngaySinh?.toString() ?? '';
         _diaChiController.text = patient.diaChi ?? '';
@@ -118,7 +122,8 @@ class _UpdatePatientInfoScreenState extends State<UpdatePatientInfoScreen> {
       if (v.contains('/')) {
         final parts = v.split('/');
         if (parts.length == 3) {
-          normalized = '${parts[2]}-${parts[1].padLeft(2, '0')}-${parts[0].padLeft(2, '0')}';
+          normalized =
+              '${parts[2]}-${parts[1].padLeft(2, '0')}-${parts[0].padLeft(2, '0')}';
         } else {
           return 'Ngày sinh không đúng định dạng';
         }
@@ -188,11 +193,11 @@ class _UpdatePatientInfoScreenState extends State<UpdatePatientInfoScreen> {
       ToastHelper.warning(
         context: context,
         title: 'Thiếu / Sai thông tin',
-        description: 'Vui lòng nhập đầy đủ các trường bắt buộc (*) và đúng định dạng.',
+        description:
+            'Vui lòng nhập đầy đủ các trường bắt buộc (*) và đúng định dạng.',
       );
       return;
     }
-
 
     if (_gioiTinh == null || _gioiTinh == 'Chưa xác định') {
       ToastHelper.warning(
@@ -204,30 +209,31 @@ class _UpdatePatientInfoScreenState extends State<UpdatePatientInfoScreen> {
     }
 
     if (_maBenhNhan == null) {
-      ToastHelper.error(context: context, title: 'Lỗi', description: 'Không tìm thấy mã bệnh nhân');
+      ToastHelper.error(
+        context: context,
+        title: 'Lỗi',
+        description: 'Không tìm thấy mã bệnh nhân',
+      );
       return;
     }
 
     setState(() => _isSaving = true);
 
     try {
-
       LocalDate? ngaySinh;
       final ngaySinhText = _ngaySinhController.text.trim();
       if (ngaySinhText.isNotEmpty) {
         try {
-
           String normalized = ngaySinhText;
           if (ngaySinhText.contains('/')) {
             final parts = ngaySinhText.split('/');
             if (parts.length == 3) {
-              normalized = '${parts[2]}-${parts[1].padLeft(2, '0')}-${parts[0].padLeft(2, '0')}';
+              normalized =
+                  '${parts[2]}-${parts[1].padLeft(2, '0')}-${parts[0].padLeft(2, '0')}';
             }
           }
           ngaySinh = LocalDate.parse(normalized);
-        } catch (_) {
-
-        }
+        } catch (_) {}
       }
 
       bool? gioiTinhBool;
@@ -244,13 +250,25 @@ class _UpdatePatientInfoScreenState extends State<UpdatePatientInfoScreen> {
         diaChi: _diaChiController.text.trim(),
         soDienThoai: _soDienThoaiController.text.trim(),
         email: _emailController.text.trim(),
-        ngheNghiep: _ngheNghiepController.text.trim().isEmpty ? null : _ngheNghiepController.text.trim(),
-        nhomMau: _nhomMauController.text.trim().isEmpty ? null : _nhomMauController.text.trim(),
-        diUngThuoc: _diUngThuocController.text.trim().isEmpty ? null : _diUngThuocController.text.trim(),
+        ngheNghiep: _ngheNghiepController.text.trim().isEmpty
+            ? null
+            : _ngheNghiepController.text.trim(),
+        nhomMau: _nhomMauController.text.trim().isEmpty
+            ? null
+            : _nhomMauController.text.trim(),
+        diUngThuoc: _diUngThuocController.text.trim().isEmpty
+            ? null
+            : _diUngThuocController.text.trim(),
         tienSuBenh: _tienSuBenhController.text.trim(),
-        nguoiGiamHo: _nguoiGiamHoController.text.trim().isEmpty ? null : _nguoiGiamHoController.text.trim(),
-        soDienThoaiNguoiGiamHo: _sdtNguoiGiamHoController.text.trim().isEmpty ? null : _sdtNguoiGiamHoController.text.trim(),
-        ghiChu: _ghiChuController.text.trim().isEmpty ? null : _ghiChuController.text.trim(),
+        nguoiGiamHo: _nguoiGiamHoController.text.trim().isEmpty
+            ? null
+            : _nguoiGiamHoController.text.trim(),
+        soDienThoaiNguoiGiamHo: _sdtNguoiGiamHoController.text.trim().isEmpty
+            ? null
+            : _sdtNguoiGiamHoController.text.trim(),
+        ghiChu: _ghiChuController.text.trim().isEmpty
+            ? null
+            : _ghiChuController.text.trim(),
         cccd: _cccdController.text.trim(),
         gioiTinh: gioiTinhBool,
       );
@@ -291,7 +309,11 @@ class _UpdatePatientInfoScreenState extends State<UpdatePatientInfoScreen> {
       appBar: AppBar(
         title: const Text(
           'Cập nhật thông tin',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: _foregroundColor),
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: _foregroundColor,
+          ),
         ),
         backgroundColor: Colors.white,
         elevation: 0.5,
@@ -318,12 +340,20 @@ class _UpdatePatientInfoScreenState extends State<UpdatePatientInfoScreen> {
                       child: const Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Icon(Icons.warning_amber_rounded, color: Colors.red, size: 20),
+                          Icon(
+                            Icons.warning_amber_rounded,
+                            color: Colors.red,
+                            size: 20,
+                          ),
                           SizedBox(width: 8),
                           Expanded(
                             child: Text(
                               'Các trường có dấu * là bắt buộc và phải đúng định dạng. Vui lòng nhập đầy đủ trước khi lưu.',
-                              style: TextStyle(fontSize: 13, color: Colors.red, height: 1.4),
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.red,
+                                height: 1.4,
+                              ),
                             ),
                           ),
                         ],
@@ -334,11 +364,23 @@ class _UpdatePatientInfoScreenState extends State<UpdatePatientInfoScreen> {
                     // === THÔNG TIN CƠ BẢN ===
                     _buildSectionHeader('Thông tin cơ bản'),
                     const SizedBox(height: 12),
+                    if (_isIdentityVerified)
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 16),
+                        child: Text(
+                          'Thông tin định danh đã được xác minh. Nếu cần thay đổi, vui lòng liên hệ lễ tân.',
+                          style: TextStyle(
+                            color: Colors.orange[800],
+                            fontSize: 13,
+                          ),
+                        ),
+                      ),
                     _buildTextField(
                       controller: _hoTenController,
                       label: 'Họ và tên *',
                       icon: Icons.person_outline,
                       validator: _validateHoTen,
+                      readOnly: _isIdentityVerified,
                     ),
                     const SizedBox(height: 12),
                     _buildTextField(
@@ -347,6 +389,7 @@ class _UpdatePatientInfoScreenState extends State<UpdatePatientInfoScreen> {
                       icon: Icons.calendar_today_outlined,
                       hint: '2000-01-15',
                       validator: _validateNgaySinh,
+                      readOnly: _isIdentityVerified,
                     ),
                     const SizedBox(height: 12),
                     _buildGenderSelector(),
@@ -356,6 +399,7 @@ class _UpdatePatientInfoScreenState extends State<UpdatePatientInfoScreen> {
                       label: 'CCCD/CMND *',
                       icon: Icons.credit_card_outlined,
                       validator: _validateCccd,
+                      readOnly: _isIdentityVerified,
                     ),
                     const SizedBox(height: 12),
                     _buildTextField(
@@ -473,7 +517,10 @@ class _UpdatePatientInfoScreenState extends State<UpdatePatientInfoScreen> {
                               )
                             : const Text(
                                 'Lưu thông tin',
-                                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                       ),
                     ),
@@ -517,20 +564,25 @@ class _UpdatePatientInfoScreenState extends State<UpdatePatientInfoScreen> {
     TextInputType? keyboardType,
     int maxLines = 1,
     String? Function(String?)? validator,
+    bool readOnly = false,
   }) {
     return TextFormField(
       controller: controller,
       validator: validator,
       keyboardType: keyboardType,
       maxLines: maxLines,
+      readOnly: readOnly,
       style: const TextStyle(fontSize: 14, color: _foregroundColor),
       decoration: InputDecoration(
         labelText: label,
         hintText: hint,
-        hintStyle: TextStyle(color: _mutedForeground.withValues(alpha: 0.5), fontSize: 13),
+        hintStyle: TextStyle(
+          color: _mutedForeground.withValues(alpha: 0.5),
+          fontSize: 13,
+        ),
         prefixIcon: Icon(icon, size: 20, color: _mutedForeground),
         filled: true,
-        fillColor: _bgSection,
+        fillColor: readOnly ? Colors.grey[200] : _bgSection,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(12),
           borderSide: BorderSide(color: _borderColor),
@@ -547,7 +599,10 @@ class _UpdatePatientInfoScreenState extends State<UpdatePatientInfoScreen> {
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: Color(0xFFDC2626)),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
         labelStyle: const TextStyle(fontSize: 13, color: _mutedForeground),
       ),
     );
@@ -583,13 +638,17 @@ class _UpdatePatientInfoScreenState extends State<UpdatePatientInfoScreen> {
                 selectedColor: _primaryColor.withValues(alpha: 0.15),
                 labelStyle: TextStyle(
                   color: _gioiTinh == 'Nam' ? _primaryColor : _mutedForeground,
-                  fontWeight: _gioiTinh == 'Nam' ? FontWeight.w600 : FontWeight.w400,
+                  fontWeight: _gioiTinh == 'Nam'
+                      ? FontWeight.w600
+                      : FontWeight.w400,
                   fontSize: 13,
                 ),
                 onSelected: (selected) {
                   if (selected) setState(() => _gioiTinh = 'Nam');
                 },
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 side: BorderSide.none,
                 visualDensity: VisualDensity.compact,
               ),
@@ -600,13 +659,17 @@ class _UpdatePatientInfoScreenState extends State<UpdatePatientInfoScreen> {
                 selectedColor: Colors.pink.withValues(alpha: 0.15),
                 labelStyle: TextStyle(
                   color: _gioiTinh == 'Nữ' ? Colors.pink : _mutedForeground,
-                  fontWeight: _gioiTinh == 'Nữ' ? FontWeight.w600 : FontWeight.w400,
+                  fontWeight: _gioiTinh == 'Nữ'
+                      ? FontWeight.w600
+                      : FontWeight.w400,
                   fontSize: 13,
                 ),
                 onSelected: (selected) {
                   if (selected) setState(() => _gioiTinh = 'Nữ');
                 },
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
                 side: BorderSide.none,
                 visualDensity: VisualDensity.compact,
               ),
